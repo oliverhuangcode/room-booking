@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "Booking" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room" TEXT NOT NULL,
+    "date" TEXT NOT NULL,
+    "time" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,7 @@
+From: "Library Booking" <noreply@university.edu>
+To: user@example.com
+Subject: Booking Confirmation
+Date: Thu, 3 Apr 2025 12:30:00 GMT
+Content-Type: text/plain; charset=utf-8
+
+Room: LG-01, Date: April 3, 2025, Time: 12:30am - 1:30am
