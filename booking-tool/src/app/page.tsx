@@ -21,16 +21,31 @@ interface BookingRow {
   Date: string; // Formatted as "MM/dd/yy", e.g. "04/14/25"
 }
 
+// A simple LoadingSpinner component.
+function LoadingSpinner() {
+  const spinnerStyle: React.CSSProperties = {
+    border: "4px solid rgba(0,0,0,0.1)",
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    borderLeftColor: "#09f",
+    animation: "spin 1s linear infinite",
+  };
+  return <div style={spinnerStyle}></div>;
+}
+
 const localizer = momentLocalizer(moment);
 
 export default function BookingCalendar() {
   const [events, setEvents] = useState<BookingEvent[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const API_URL =
     "https://script.google.com/macros/s/AKfycbxu4TBxTvr5hxof8vQ54yXc6sq7eqdaDw61JWjEsUPNTZoA5hqRL0_wldkokUa1pURntQ/exec";
 
 
   useEffect(() => {
+    setIsLoading(true);
     fetch(API_URL)
       .then((res) => res.json())
       .then((data: BookingRow[]) => {
@@ -74,7 +89,8 @@ export default function BookingCalendar() {
         });
         setEvents(eventsData);
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => console.error("Error fetching data:", error))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const eventStyleGetter = (
@@ -95,6 +111,19 @@ export default function BookingCalendar() {
   //   },
   // };
 
+  if (isLoading) {
+    return (
+      <div style={{ 
+          height: "100vh", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center" 
+      }}>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+  
   return (
     <div style={{ height: "100vh", padding: "40px" }}>
       <h1>Booking Calendar</h1>
