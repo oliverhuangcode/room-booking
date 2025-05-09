@@ -8,6 +8,7 @@ interface CustomEventProps {
     title: string;
     start: Date;
     end: Date;
+    name: string;
   };
 }
 
@@ -19,6 +20,9 @@ const CustomEvent: React.FC<CustomEventProps> = ({ event }) => {
       {/* Time below */}
       <div style={{ fontSize: '0.8em' }}>
         {moment(event.start).format("h:mm A")} - {moment(event.end).format("h:mm A")}
+      </div>
+      <div style={{ fontSize: '0.8em' }}>
+        {event.name}
       </div>
     </div>
   );

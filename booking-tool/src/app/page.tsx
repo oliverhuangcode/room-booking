@@ -104,7 +104,7 @@ export default function BookingCalendar() {
   return (
     <div style={{ height: "100vh", padding: "40px" }}>
       <h1>Booking Calendar</h1>
-      <div className="height500">
+      <div className="">
         <Calendar
           localizer={localizer}
           events={events}
