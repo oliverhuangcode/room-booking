@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 import CustomEvent from "./components/CustomEvent";
@@ -24,9 +24,40 @@ interface BookingRow {
 
 const localizer = momentLocalizer(moment);
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width:${breakpoint}px)`);
+
+    const update = (e: MediaQueryList | MediaQueryListEvent) =>
+      setIsMobile('matches' in e ? e.matches : (e as MediaQueryList).matches);
+
+    update(mql); // initial value
+
+    if ('addEventListener' in mql) {
+      mql.addEventListener('change', update);
+      return () => mql.removeEventListener('change', update);
+    }
+
+    // Fallback for older Safari (type cast keeps TS happy)
+    (mql as unknown as { addListener(fn: typeof update): void }).addListener(update);
+    return () =>
+      (mql as unknown as { removeListener(fn: typeof update): void }).removeListener(update);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
 export default function BookingCalendar() {
   const [events, setEvents] = useState<BookingEvent[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isMobile = useIsMobile();              // ← detects ≤768 px
+  const [view, setView] = useState<View>("week"); 
+
+  useEffect(() => {
+    setView(isMobile ? "day" : "week");
+  }, [isMobile]);
 
   const API_URL =
     "https://script.google.com/macros/s/AKfycbxu4TBxTvr5hxof8vQ54yXc6sq7eqdaDw61JWjEsUPNTZoA5hqRL0_wldkokUa1pURntQ/exec";
@@ -108,6 +139,7 @@ export default function BookingCalendar() {
         <Calendar
           localizer={localizer}
           events={events}
+          view={view}      
           startAccessor="start"
           endAccessor="end"
           defaultView={"week"}
